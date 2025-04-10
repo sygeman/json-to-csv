@@ -1,0 +1,71 @@
+{
+  "id": "11a82436-c606-11ef-92da-755c3fa0e326",
+  "accrArea": {
+    "id": 1,
+    "name": "Средства размещения"
+  },
+  "certificates": [
+    {
+      "category": {
+        "id": 3,
+        "name": "три звезды"
+      },
+      "decisionDate": "2024-07-26",
+      "decisionNumber": "168"
+    }
+  ],
+  "contacts": {
+    "email": "ooo_ysuf@mail.ru",
+    "phone": "8 (938) 001-32-64",
+    "websiteAddress": " http://road-hotel.ru"
+  },
+  "hotel": {
+    "main": {
+      "addressList": [
+        {
+          "name": "Республика Чеченская,   Шелковской район,   станица Шелковская,   трасса Р-215,   55 км"
+        }
+      ],
+      "category": {
+        "id": 3,
+        "name": "три звезды"
+      },
+      "fullName": "Отель «Road Hotel»",
+      "hotelType": {
+        "id": 100,
+        "name": "Гостиница"
+      },
+      "ownerInn": "2006001011",
+      "ownerName": "ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ \"ЮСУФ\"",
+      "ownerOgrn": "1062032014923",
+      "region": {
+        "id": 20,
+        "name": "Чеченская Республика"
+      },
+      "registerRecord": "С202024001249",
+      "status": {
+        "id": 6,
+        "name": "Действует"
+      }
+    },
+    "rooms": [
+      {
+        "apartmentCount": 2,
+        "numberSeats": 4,
+        "roomCategory": {
+          "id": 63,
+          "name": "Джуниор сюит"
+        }
+      },
+      {
+        "apartmentCount": 11,
+        "numberSeats": 22,
+        "roomCategory": {
+          "id": 1,
+          "name": "Первая (стандарт)"
+        }
+      }
+    ]
+  },
+  "resortId": "11a82436-c606-11ef-92da-755c3fa0e326"
+}

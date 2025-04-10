@@ -1,108 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { parse } from "json2csv";
-
-type JsonValue = string | number | boolean | null | JsonObject | JsonArray;
-type JsonObject = { [key: string]: JsonValue };
-type JsonArray = JsonValue[];
-
-// Функция для преобразования вложенного объекта в плоский
-const flattenObject = (
-  obj: JsonObject,
-  prefix = ""
-): Record<string, string | number | boolean | null> => {
-  return Object.keys(obj).reduce(
-    (acc: Record<string, string | number | boolean | null>, key: string) => {
-      const pre = prefix.length ? prefix + "__" : "";
-      const value = obj[key];
-
-      if (
-        typeof value === "object" &&
-        value !== null &&
-        !Array.isArray(value)
-      ) {
-        Object.assign(acc, flattenObject(value as JsonObject, pre + key));
-      } else if (Array.isArray(value)) {
-        // Для массивов объектов разворачиваем их в отдельные строки
-        if (value.length > 0 && typeof value[0] === "object") {
-          value.forEach((item, index) => {
-            Object.assign(
-              acc,
-              flattenObject(item as JsonObject, `${pre}${key}__${index}`)
-            );
-          });
-        } else {
-          // Для простых массивов сохраняем как JSON строку
-          acc[pre + key] = JSON.stringify(value);
-        }
-      } else {
-        acc[pre + key] = value;
-      }
-
-      return acc;
-    },
-    {}
-  );
-};
-
-// Функция для разворачивания массива объектов в плоскую структуру
-const expandArrayObjects = (data: JsonObject[]): JsonObject[] => {
-  const result: JsonObject[] = [];
-
-  data.forEach((item) => {
-    const flattened = flattenObject(item);
-    const arrays: { [key: string]: JsonObject[] } = {};
-
-    // Собираем все массивы объектов
-    Object.keys(flattened).forEach((key) => {
-      const match = key.match(/^(.*?)__\d+__/);
-      if (match) {
-        const arrayKey = match[1];
-        if (!arrays[arrayKey]) {
-          arrays[arrayKey] = [];
-        }
-      }
-    });
-
-    // Если нет массивов объектов, просто добавляем плоский объект
-    if (Object.keys(arrays).length === 0) {
-      result.push(flattened);
-      return;
-    }
-
-    // Создаем строки для каждого элемента массива
-    Object.keys(arrays).forEach((arrayKey) => {
-      const arrayItems = Object.keys(flattened)
-        .filter((key) => key.startsWith(arrayKey + "__"))
-        .reduce((acc: JsonObject[], key) => {
-          const match = key.match(new RegExp(`^${arrayKey}__(\\d+)__(.*)$`));
-          if (match) {
-            const index = parseInt(match[1]);
-            const field = match[2];
-            if (!acc[index]) {
-              acc[index] = {};
-            }
-            acc[index][field] = flattened[key];
-          }
-          return acc;
-        }, []);
-
-      arrayItems.forEach((arrayItem) => {
-        const row = { ...flattened };
-        Object.keys(row).forEach((key) => {
-          if (key.startsWith(arrayKey + "__")) {
-            delete row[key];
-          }
-        });
-        Object.assign(row, arrayItem);
-        result.push(row);
-      });
-    });
-  });
-
-  return result;
-};
 
 export default function Home() {
   const [jsonInput, setJsonInput] = useState("");
@@ -133,22 +31,43 @@ export default function Home() {
 
   const handleConvert = async () => {
     try {
+      if (!jsonInput) {
+        setError("Ошибка: нет данных для конвертации");
+        return;
+      }
+
       const jsonData = JSON.parse(jsonInput);
+      if (!jsonData) {
+        setError("Ошибка: пустой JSON");
+        return;
+      }
 
-      // Преобразуем вложенную структуру в плоскую
-      const data = Array.isArray(jsonData) ? jsonData : [jsonData];
-      const expandedData = expandArrayObjects(data as JsonObject[]);
+      const response = await fetch("/api/convert", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          jsonData,
+          fileName,
+        }),
+      });
 
-      const csv = parse(expandedData);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error);
+      }
 
       // Создаем blob и ссылку для скачивания
-      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
+      link.href = url;
       link.setAttribute("download", `${fileName.replace(".json", "")}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
 
       setError("");
     } catch (err: unknown) {

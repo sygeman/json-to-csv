@@ -94,13 +94,20 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen p-8">
-      <div className="max-w-4xl mx-auto space-y-6">
-        <h1 className="text-3xl font-bold text-center">JSON в CSV Конвертер</h1>
+    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50 p-4">
+      <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-8 space-y-8">
+        <div className="text-center space-y-2">
+          <h1 className="text-4xl font-bold text-gray-800">
+            Конвертер JSON в CSV
+          </h1>
+          <p className="text-gray-600">
+            Загрузите ваш JSON файл и получите CSV
+          </p>
+        </div>
 
-        <div className="space-y-4">
-          <div className="flex items-center space-x-4">
-            <label className="block">
+        <div className="space-y-6">
+          <div className="flex flex-col items-center space-y-4">
+            <label className="w-full max-w-md">
               <span className="sr-only">Выберите JSON файл</span>
               <input
                 type="file"
@@ -108,16 +115,17 @@ export default function Home() {
                 onChange={handleFileUpload}
                 disabled={isConverting}
                 className="block w-full text-sm text-gray-500
-                  file:mr-4 file:py-2 file:px-4
-                  file:rounded-full file:border-0
+                  file:mr-4 file:py-3 file:px-6
+                  file:rounded-lg file:border-0
                   file:text-sm file:font-semibold
-                  file:bg-blue-50 file:text-blue-700
-                  hover:file:bg-blue-100
-                  disabled:opacity-50 disabled:cursor-not-allowed"
+                  file:bg-blue-500 file:text-white
+                  hover:file:bg-blue-600
+                  disabled:opacity-50 disabled:cursor-not-allowed
+                  cursor-pointer"
               />
             </label>
             {fileName && (
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-gray-600 bg-gray-100 px-4 py-2 rounded-lg">
                 Выбран файл: {fileName}
               </span>
             )}
@@ -126,10 +134,10 @@ export default function Home() {
           <button
             onClick={handleConvert}
             disabled={!jsonInput || isConverting}
-            className={`w-full py-2 px-4 rounded-lg transition-colors flex items-center justify-center space-x-2 ${
+            className={`w-full max-w-md mx-auto py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center space-x-2 ${
               !jsonInput || isConverting
                 ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                : "bg-blue-500 text-white hover:bg-blue-600"
+                : "bg-blue-500 text-white hover:bg-blue-600 hover:shadow-lg transform hover:-translate-y-0.5"
             }`}
           >
             {isConverting ? (
@@ -166,7 +174,7 @@ export default function Home() {
           </button>
 
           {isConverting && (
-            <div className="w-full bg-gray-200 rounded-full h-2.5">
+            <div className="w-full max-w-md mx-auto bg-gray-200 rounded-full h-2.5 overflow-hidden">
               <div
                 className="bg-blue-600 h-2.5 rounded-full transition-all duration-300"
                 style={{ width: `${progress}%` }}
@@ -175,7 +183,7 @@ export default function Home() {
           )}
 
           {error && (
-            <div className="p-4 bg-red-100 text-red-700 rounded-lg">
+            <div className="w-full max-w-md mx-auto p-4 bg-red-100 text-red-700 rounded-lg border border-red-200">
               {error}
             </div>
           )}

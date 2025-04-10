@@ -9,9 +9,12 @@ type JsonArray = JsonValue[];
 
 // Функция для преобразования вложенного объекта в плоский
 const flattenObject = (
-  obj: JsonObject,
+  obj: JsonObject | null | undefined,
   prefix = ""
 ): Record<string, string | number | boolean | null> => {
+  if (!obj) {
+    return {};
+  }
   return Object.keys(obj).reduce(
     (acc: Record<string, string | number | boolean | null>, key: string) => {
       const pre = prefix.length ? prefix + "__" : "";
@@ -47,7 +50,12 @@ const flattenObject = (
 };
 
 // Функция для разворачивания массива объектов в плоскую структуру
-const expandArrayObjects = (data: JsonObject[]): JsonObject[] => {
+const expandArrayObjects = (
+  data: JsonObject[] | null | undefined
+): JsonObject[] => {
+  if (!data || !Array.isArray(data)) {
+    return [];
+  }
   const result: JsonObject[] = [];
 
   data.forEach((item) => {

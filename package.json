@@ -9,14 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@tanstack/react-table": "^8.21.2",
     "@types/json2csv": "^5.0.7",
-    "@types/react-window": "^1.8.8",
     "json2csv": "^6.0.0-alpha.2",
     "next": "15.3.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-window": "^1.8.11"
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "typescript": "^5",
